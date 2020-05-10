@@ -21,7 +21,6 @@ const NotesService = {
     },
 
     deleteNotes(knex, id) {
-        console.log(knex, id);
         return knex('noteful_notes')
         .where({id})
         .delete()

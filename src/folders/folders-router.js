@@ -36,16 +36,12 @@ foldersRouter
             newFolder
         )
         .then(folder => {
-            console.log('i was here')
             res
             .status(201)
             .location(path.posix.join(req.originalUrl, `/${folder.id}`))
             .json(serializeFolder(folder))
         })
-        // .catch(next)
-        .catch((error) => {
-            console.log(error);
-        })
+        .catch(next)
     });
 
 module.exports = foldersRouter;

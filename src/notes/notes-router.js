@@ -16,7 +16,6 @@ const serializeNote = note => ({
 
 notesRouter
     .route('/').get((req, res, next) => {
-        console.log('i was here')
         const knexInstance = req.app.get('db')
         NotesService.getAllNotes(knexInstance)
         .then(notes => {
@@ -28,38 +27,32 @@ notesRouter
         const {note_name, content, folder_id} = req.body
         const newNote = {note_name, content, folder_id}
 
-        for (const [key, value] of Object.entries(newNote)) 
-            if (value == null) 
+        for (const [key, value] of Object.entries(newNote)) {
+            if (value == null) {
                 return res.status(400).json({
                     error: {message: `Missing '${key} in request body`}
                 })
-                NotesService.insertNotes(
-                    req.app.get('db'),
-                    newNote
-                )
-                .then(note => {
-                    res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl, `/${note.id}`))
-                    .json(serializeNote(note))
-                })
-                // .catch(next)   
-                .catch((error) => {
-                    console.log(error);
-                })
+
+            } 
+        }
+
+        NotesService.insertNotes(
+            req.app.get('db'),
+            newNote
+        )
+        .then(note => {
+            res
+            .status(201)
+            .location(path.posix.join(req.originalUrl, `/${note.id}`))
+            .json(serializeNote(note))
+        })
+        .catch(next) 
+
     })
-// notesRouter
-// .route('/:id')
-//     .delete((req, res, next) => {
-//     console.log(req.params.id);
-//     NotesService.deleteNotes(req.app.get('db'), req.params.id)
-//         res.json({})
-// })
 
 notesRouter
 .route('/:id')
     .delete((req, res, next) => {
-    console.log(req.params.id);
     NotesService.deleteNotes(req.app.get('db'), req.params.id)
     .then(() => {
         res.json({}).status(204).end()
