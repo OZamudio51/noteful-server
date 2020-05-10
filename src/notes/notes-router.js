@@ -15,8 +15,8 @@ const serializeNote = note => ({
 })
 
 notesRouter
-    .route('/')
-        .get((req, res, next) => {
+    .route('/').get((req, res, next) => {
+        console.log('i was here')
         const knexInstance = req.app.get('db')
         NotesService.getAllNotes(knexInstance)
         .then(notes => {
@@ -48,13 +48,25 @@ notesRouter
                     console.log(error);
                 })
     })
+// notesRouter
+// .route('/:id')
+//     .delete((req, res, next) => {
+//     console.log(req.params.id);
+//     NotesService.deleteNotes(req.app.get('db'), req.params.id)
+//         res.json({})
+// })
+
 notesRouter
 .route('/:id')
     .delete((req, res, next) => {
     console.log(req.params.id);
     NotesService.deleteNotes(req.app.get('db'), req.params.id)
-    res.json({})
+    .then(() => {
+        res.json({}).status(204).end()
     })
+    .catch(next)
+    })
+
 
 
 module.exports = notesRouter;
